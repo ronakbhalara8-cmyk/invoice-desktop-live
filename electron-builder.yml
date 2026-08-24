@@ -1,0 +1,27 @@
+appId: com.vednovaitsolution.invoicemanager
+productName: Invoice Manager
+
+directories:
+  output: release
+
+files:
+  - .next/**/*
+  - public/**/*
+  - electron/**/*
+  - package.json
+
+asar: true
+
+win:
+  target:
+    - nsis
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+
+publish:
+  provider: github
+  owner: ronakbhalara8-cmyk
+  repo: invoice-desktop-live

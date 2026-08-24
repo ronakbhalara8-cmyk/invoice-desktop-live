@@ -31,25 +31,6 @@ contextBridge.exposeInMainWorld(
             );
         },
 
-        createInvoice: (invoice) => {
-            return ipcRenderer.invoke(
-                "invoice:create",
-                invoice
-            );
-        },
-
-        getInvoices: () => {
-            return ipcRenderer.invoke(
-                "invoice:list"
-            );
-        },
-
-        syncInvoices: () => {
-            return ipcRenderer.invoke(
-                "sync:invoices"
-            );
-        },
-
         checkServer: () => {
             return ipcRenderer.invoke(
                 "sync:check-server"

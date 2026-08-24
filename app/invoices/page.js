@@ -6,6 +6,11 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { apiRequest } from "../../lib/api";
+import {
+    createLocalInvoice,
+    getLocalInvoices,
+    syncPendingInvoices
+} from "../../lib/local-db";
 
 export default function InvoicesPage() {
     const [invoices, setInvoices] =
@@ -68,8 +73,7 @@ export default function InvoicesPage() {
         }
 
         const result =
-            await window.electronAPI
-                .getInvoices();
+            await getLocalInvoices();
 
         if (result.success) {
             setInvoices(
@@ -128,7 +132,7 @@ export default function InvoicesPage() {
         };
 
         const result = window.electronAPI
-            ? await window.electronAPI.createInvoice(invoice)
+            ? await createLocalInvoice(invoice)
             : await apiRequest("/invoices", {
                 method: "POST",
                 headers: {
@@ -158,6 +162,12 @@ export default function InvoicesPage() {
             amount: ""
         });
 
+        if (window.electronAPI && navigator.onLine) {
+            syncPendingInvoices().catch((error) => {
+                console.error("Immediate sync error:", error);
+            });
+        }
+
         await loadInvoices();
     }
 
@@ -177,8 +187,7 @@ export default function InvoicesPage() {
         setSyncing(true);
 
         const result =
-            await window.electronAPI
-                .syncInvoices();
+            await syncPendingInvoices();
 
         setSyncing(false);
 
@@ -216,16 +225,29 @@ export default function InvoicesPage() {
         loadInvoices();
         checkOnline();
 
+        const syncWhenOnline = () => {
+            if (window.electronAPI) {
+                syncPendingInvoices()
+                    .then(loadInvoices)
+                    .catch((error) => {
+                        console.error("Automatic sync error:", error);
+                    });
+            }
+        };
+
+        window.addEventListener("online", syncWhenOnline);
+
         const interval =
             setInterval(() => {
                 checkOnline();
                 loadInvoices();
+                syncWhenOnline();
             }, 5000);
 
-        return () =>
-            clearInterval(
-                interval
-            );
+        return () => {
+            clearInterval(interval);
+            window.removeEventListener("online", syncWhenOnline);
+        };
     }, []);
 
     return (
