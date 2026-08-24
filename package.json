@@ -1,0 +1,38 @@
+{
+  "name": "invoice-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k \"next dev -p 3000\" \"node server/index.js\" \"wait-on http://localhost:3000 http://localhost:5000/api/health && electron electron/main.js\"",
+    "next": "next dev",
+    "server": "node server/index.js",
+    "build": "next build",
+    "electron": "electron electron/main.js",
+    "dist": "npm run build && electron-builder"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.112.4",
+    "axios": "^1.19.0",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^13.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "electron": "^43.4.1",
+    "electron-builder": "^26.15.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "next": "16.3.2",
+    "pg": "^8.23.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "concurrently": "^10.0.5",
+    "cross-env": "^10.1.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.2",
+    "tailwindcss": "^4",
+    "wait-on": "^9.1.0"
+  }
+}
