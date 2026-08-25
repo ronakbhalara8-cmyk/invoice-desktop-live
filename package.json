@@ -9,7 +9,9 @@
     "server": "node server/index.js",
     "build": "next build",
     "electron": "electron electron/main.js",
-    "dist": "npm run build && electron-builder"
+    "copy-node": "node scripts/copy-node-binary.js",
+    "prebuild": "node scripts/copy-node-binary.js",
+    "dist": "npm run build && npm run copy-node && electron-builder"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.4",

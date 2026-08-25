@@ -8,9 +8,23 @@ files:
   - .next/**/*
   - public/**/*
   - electron/**/*
+  - server/**/*
   - package.json
+  - .env.server
+  - .env.server.example
+
+extraResources:
+  - from: resources/bin
+    to: bin
+    filter:
+      - "**/*"
 
 asar: true
+
+asarUnpack:
+  - ".next/standalone/**/*"
+  - "server/**/*"
+  - ".env.server"
 
 win:
   target:

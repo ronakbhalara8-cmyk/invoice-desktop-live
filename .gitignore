@@ -13,6 +13,13 @@
 release/
 dist/
 
+# Bundled Node.js runtime (generated during build, ~100MB)
+/resources/bin/
+
+# Environment files with credentials (should NEVER be committed to GitHub)
+.env.server
+.env.local
+
 # testing
 /coverage
 

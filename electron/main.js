@@ -6,12 +6,13 @@ const {
 
 const path = require("path");
 const { isServerAvailable } = require("./sync");
+const { startProductionServices, stopAllServices } = require("./services");
 
 let mainWindow;
 let authToken = null;
 const isDev = !app.isPackaged;
 
-function createWindow() {
+async function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1440,
         height: 900,
@@ -25,9 +26,7 @@ function createWindow() {
         }
     });
 
-    mainWindow.loadURL(
-        isDev ? "http://localhost:3000" : "http://localhost:3000"
-    );
+    mainWindow.loadURL("http://localhost:3000");
 }
 
 ipcMain.handle("auth:save-token", async (event, token) => {
@@ -52,18 +51,42 @@ ipcMain.handle("sync:check-server", async () => ({
     online: await isServerAvailable()
 }));
 
-app.whenReady().then(() => {
-    createWindow();
+app.whenReady().then(async () => {
+    // In production, start the local servers before creating the window
+    if (!isDev) {
+        try {
+            await startProductionServices();
+            console.log("[Electron] Production services started, creating window");
+        } catch (error) {
+            console.error("[Electron] Failed to start production services:", error.message);
+            app.quit();
+            return;
+        }
+    }
 
-    app.on("activate", () => {
+    await createWindow();
+
+    app.on("activate", async () => {
         if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow();
+            await createWindow();
         }
     });
 });
 
 app.on("window-all-closed", () => {
+    // Stop all services in production mode
+    if (!isDev) {
+        stopAllServices();
+    }
+
     if (process.platform !== "darwin") {
         app.quit();
+    }
+});
+
+// Clean up on app quit
+app.on("before-quit", () => {
+    if (!isDev) {
+        stopAllServices();
     }
 });
