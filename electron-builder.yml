@@ -18,6 +18,10 @@ extraResources:
     to: bin
     filter:
       - "**/*"
+  - from: resources/server-runtime/node_modules
+    to: app.asar.unpacked/node_modules
+    filter:
+      - "**/*"
 
 asar: true
 

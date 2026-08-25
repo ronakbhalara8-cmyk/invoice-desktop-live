@@ -10,8 +10,9 @@
     "build": "next build",
     "electron": "electron electron/main.js",
     "copy-node": "node scripts/copy-node-binary.js",
+    "prepare-server-dependencies": "node scripts/prepare-server-dependencies.js",
     "prebuild": "node scripts/copy-node-binary.js",
-    "dist": "npm run build && npm run copy-node && electron-builder"
+    "dist": "npm run build && npm run copy-node && npm run prepare-server-dependencies && electron-builder"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.4",

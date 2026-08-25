@@ -16,6 +16,9 @@ dist/
 # Bundled Node.js runtime (generated during build, ~100MB)
 /resources/bin/
 
+# Express production dependencies (generated during build)
+/resources/server-runtime/
+
 # Environment files with credentials (should NEVER be committed to GitHub)
 .env.server
 .env.local
